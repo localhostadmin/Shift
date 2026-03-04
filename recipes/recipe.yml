@@ -22,12 +22,6 @@ modules:
           - org.videolan.VLC
           - com.rustdesk.RustDesk
 
-  # Remove unwanted KDE tools
-  - type: rpm-ostree
-    remove:
-      - kate
-      - konsole
-      - akregator
     install:
       - plasma-discover
       - kde-gtk-config
