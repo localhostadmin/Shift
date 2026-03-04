@@ -22,12 +22,8 @@ modules:
           - org.videolan.VLC
           - com.rustdesk.RustDesk
 
-    install:
-      - plasma-discover
-      - kde-gtk-config
-      - firewall-config
-
-  # Enable firewall
+  
+# Enable firewall
   - type: systemd
     system:
       enabled:
