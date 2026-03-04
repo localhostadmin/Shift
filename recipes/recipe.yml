@@ -1,31 +1,43 @@
-# shift-os-recipe.yml
-name: shift-os
-description: The mechanic's approach to a Forever PC. (GNOME Edition)
-base-image: ghcr.io/ublue-os/silverblue-main
-image-version: 39 
+---
+# yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
+
+name: shiftos
+description: ShiftOS - KDE-based Atomic OS for Localhost deployments
+
+base-image: ghcr.io/ublue-os/kinoite-main
+image-version: latest
 
 modules:
-  # 1. Wrenching out the bloat
-  - type: rpm-ostree
-    remove:
-      - firefox # Removing the stock version to use the Flatpak
-      - yelp    # Removing GNOME help
-    install:
-      - gnome-tweaks # Adding customization tools
-      
-  # 2. Installing the safe, sandboxed apps
+
+  # 1️⃣ Enable Flathub and install safe sandboxed apps
   - type: default-flatpaks
-    system:
-      - repo-url: https://dl.flathub.org/repo/flathub.flatpakrepo
-        repo-name: flathub
+    configurations:
+      - scope: system
+        repo:
+          name: flathub
+          url: https://dl.flathub.org/repo/flathub.flatpakrepo
         install:
           - org.mozilla.firefox
+          - org.libreoffice.LibreOffice
           - org.videolan.VLC
-          - com.rustdesk.RustDesk # For your remote support!
+          - com.rustdesk.RustDesk
 
-  # 3. Injecting the Shiffty Welcome App
-  - type: script
-    snippets:
-      - "echo 'Waking up Shiffty...'"
-      - "mkdir -p /usr/share/shift-os"
-      # (This is where we will pull your Shiffty Python script)
+  # 2️⃣ Remove unwanted default apps (optional cleanup)
+  - type: remove-packages
+    packages:
+      - kate
+      - konsole
+      - akregator
+
+  # 3️⃣ Install essential system packages (minimal)
+  - type: rpm-ostree
+    install:
+      - plasma-discover
+      - kde-gtk-config
+      - firewall-config
+
+  # 4️⃣ Enable and configure firewall
+  - type: systemd
+    system:
+      enabled:
+        - firewalld.service
