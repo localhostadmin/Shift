@@ -9,7 +9,7 @@ image-version: latest
 
 modules:
 
-  # 1️⃣ Enable Flathub and install safe sandboxed apps
+  # Flatpaks
   - type: default-flatpaks
     configurations:
       - scope: system
@@ -22,22 +22,20 @@ modules:
           - org.videolan.VLC
           - com.rustdesk.RustDesk
 
-  # 2️⃣ Remove unwanted default apps (optional cleanup)
-  - type: remove-packages
-    packages:
+  # Remove unwanted KDE tools
+  - type: rpm-ostree
+    remove:
       - kate
       - konsole
       - akregator
-
-  # 3️⃣ Install essential system packages (minimal)
-  - type: rpm-ostree
     install:
       - plasma-discover
       - kde-gtk-config
       - firewall-config
 
-  # 4️⃣ Enable and configure firewall
+  # Enable firewall
   - type: systemd
     system:
       enabled:
         - firewalld.service
+        
